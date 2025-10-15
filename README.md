@@ -33,5 +33,4 @@
 8주차 | 백엔드 서버 연동 | Node.js 또는 Python Flask 서버와 DB 연동 실습
 9주차 | 서버 모니터링 실습 (Prometheus + Grafana) | Prometheus와 Grafana를 활용한 서버 상태 모니터링 및 시각화 실습
 10주차 | 배포 및 운영 | 간단한 CI/CD 개념, 서버 모니터링 도구 소개
-11주차 | 팀 프로젝트 발표 | 각 팀별 서버 프로젝트 발표 및 피드백 세션
 

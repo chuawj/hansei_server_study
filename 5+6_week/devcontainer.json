@@ -1,0 +1,21 @@
+{
+  "name": "Ubuntu 22.04 Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
+  },
+  "forwardPorts": [22],
+  "runArgs": ["-p", "2222:22"],
+  "postCreateCommand": "bash -lc \"sudo apt-get update && sudo apt-get install -y --no-install-recommends net-tools htop vim git curl && if [ -f '\"${containerWorkspaceFolder}/.devcontainer/authorized_keys\"' ]; then mkdir -p /home/vscode/.ssh && cp '\"${containerWorkspaceFolder}/.devcontainer/authorized_keys\"' /home/vscode/.ssh/authorized_keys && chown -R vscode:vscode /home/vscode/.ssh && chmod 700 /home/vscode/.ssh && chmod 600 /home/vscode/.ssh/authorized_keys; fi\"",
+  "remoteUser": "vscode"
+}

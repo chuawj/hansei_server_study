@@ -1,0 +1,7 @@
+# 이 파일을 복사하여 '.devcontainer/authorized_keys'로 이름 변경하고
+# 자신의 공개키(예: id_ed25519.pub 또는 id_rsa.pub)의 내용을 붙여넣으세요.
+# 그런 다음 VSCode에서 "Reopen in Container"를 실행하면 컨테이너가 생성될 때
+# /home/vscode/.ssh/authorized_keys로 자동 복사됩니다.
+
+# 예시 공개키 한 줄 (아래는 예시이므로 실제 키로 교체하세요):
+# ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyHere user@example.com

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팁 커뮤니티 - Tip Community</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            padding: 30px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+        }
+        h1 { 
+            color: #333; 
+            margin-bottom: 10px; 
+            text-align: center; 
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #333; 
+        }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #667eea; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: bold;
+            transition: all 0.3s; 
+        }
+        button:hover { 
+            background: #764ba2; 
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-delete { 
+            background: #e74c3c; 
+            font-size: 12px; 
+            padding: 5px 10px; 
+        }
+        .btn-delete:hover { 
+            background: #c0392b; 
+        }
+        .message { 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            display: none; 
+            font-weight: 500;
+        }
+        .message.success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .message.error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .message.show { 
+            display: block; 
+        }
+        .tips-list {
+            margin-top: 20px;
+        }
+        .tip-item { 
+            background: #f9f9f9; 
+            padding: 15px; 
+            border-left: 4px solid #667eea; 
+            margin-bottom: 15px; 
+            border-radius: 3px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .tip-item.editing {
+            background: #e8f4f8;
+        }
+        .tip-content { 
+            flex-grow: 1; 
+        }
+        .tip-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .tip-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .tip-author {
+            font-style: italic;
+            color: #667eea;
+        }
+        .tip-text {
+            color: #333;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .tip-actions { 
+            display: flex; 
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .tip-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .edit-form {
+            display: grid;
+            gap: 10px;
+        }
+        .edit-form input,
+        .edit-form textarea {
+            width: 100%;
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+        .stat-card { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center;
+            margin-top: 20px;
+        }
+        .stat-card h3 { 
+            font-size: 36px; 
+            margin-bottom: 10px; 
+        }
+        .stat-card p { 
+            opacity: 0.9; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💡 팁 커뮤니티 - Tip Community</h1>
+        <div class="subtitle">도움이 될 만한 팁과 경험을 공유하는 커뮤니티</div>
+        
+        <div id="message" class="message"></div>
+        
+        <!-- 팁 작성 폼 -->
+        <div class="form-section">
+            <h2>새로운 팁 공유하기</h2>
+            <div class="form-group">
+                <label>제목 *</label>
+                <input type="text" id="tipTitle" placeholder="짧고 명확한 제목을 입력하세요" maxlength="200">
+            </div>
+            <div class="form-group">
+                <label>작성자 (선택)</label>
+                <input type="text" id="tipAuthor" placeholder="닉네임 또는 이름 (빈 칸이면 익명)" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>내용 *</label>
+                <textarea id="tipContent" rows="6" placeholder="도움이 될 만한 팁이나 경험을 자유롭게 적어주세요" maxlength="2000"></textarea>
+            </div>
+            <button onclick="createTip()">💬 팁 공유하기</button>
+        </div>
+
+        <!-- 팁 목록 -->
+        <div>
+            <h2>공유된 팁</h2>
+            <div id="tipsList" class="tips-list"></div>
+            <div id="tipsStats"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8000";
+
+        function showMessage(text, type = 'success') {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message show ' + type;
+            setTimeout(() => msg.classList.remove('show'), 3000);
+        }
+
+        // 팁 생성
+        async function createTip() {
+            const title = document.getElementById('tipTitle').value.trim();
+            const author = document.getElementById('tipAuthor').value.trim() || 'anonymous';
+            const content = document.getElementById('tipContent').value.trim();
+            
+            if (!title || !content) { 
+                showMessage('제목과 내용은 필수입니다', 'error'); 
+                return; 
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/tips/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, author })
+                });
+                
+                if (res.ok) {
+                    document.getElementById('tipTitle').value = '';
+                    document.getElementById('tipAuthor').value = '';
+                    document.getElementById('tipContent').value = '';
+                    showMessage('✓ 팁이 성공적으로 공유되었습니다!');
+                    loadTips();
+                } else {
+                    const error = await res.text();
+                    showMessage('✗ 오류: ' + error, 'error');
+                }
+            } catch (e) { 
+                showMessage('✗ 네트워크 오류: ' + e.message, 'error'); 
+            }
+        }
+
+        // 팁 목록 로드
+        async function loadTips() {
+            try {
+                const res = await fetch(`${API_BASE}/tips/`);
+                const tips = await res.json();
+                window.tipsCache = tips;
+                
+                const list = document.getElementById('tipsList');
+                
+                if (tips.length === 0) {
+                    list.innerHTML = '<div class="empty-state">아직 공유된 팁이 없습니다. 첫 번째 팁을 공유해주세요! 👆</div>';
+                } else {
+                    list.innerHTML = tips.map(t => `
+                        <div class="tip-item" id="tip-row-${t.id}">
+                            <div class="tip-content" id="tip-info-${t.id}">
+                                <div class="tip-title">${escapeHtml(t.title)}</div>
+                                <div class="tip-meta">
+                                    by <span class="tip-author">${escapeHtml(t.author)}</span> 
+                                    · ${new Date(t.created_at).toLocaleString('ko-KR')}
+                                </div>
+                                <div class="tip-text">${escapeHtml(t.content)}</div>
+                            </div>
+                            <div class="tip-actions" id="tip-actions-${t.id}">
+                                <button onclick="editTip(${t.id})">✏️ 수정</button>
+                                <button class="btn-delete" onclick="deleteTip(${t.id})">🗑️ 삭제</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                document.getElementById('tipsStats').innerHTML = `
+                    <div class="stat-card">
+                        <h3>${tips.length}</h3>
+                        <p>총 공유된 팁</p>
+                    </div>
+                `;
+            } catch (e) { 
+                console.error('팁 로드 실패:', e);
+                showMessage('✗ 팁을 불러올 수 없습니다', 'error');
+            }
+        }
+
+        // 팁 편집
+        function editTip(id) {
+            const tip = (window.tipsCache || []).find(x => x.id === id);
+            if (!tip) return;
+            
+            const infoEl = document.getElementById(`tip-info-${id}`);
+            const actionsEl = document.getElementById(`tip-actions-${id}`);
+            const row = document.getElementById(`tip-row-${id}`);
+            
+            infoEl.innerHTML = `
+                <div class="edit-form">
+                    <div>
+                        <label>제목</label>
+                        <input id="edit-tip-title-${id}" value="${escapeHtml(tip.title)}" maxlength="200" />
+                    </div>
+                    <div>
+                        <label>작성자</label>
+                        <input id="edit-tip-author-${id}" value="${escapeHtml(tip.author)}" maxlength="100" />
+                    </div>
+                    <div>
+                        <label>내용</label>
+                        <textarea id="edit-tip-content-${id}" rows="5" maxlength="2000">${escapeHtml(tip.content)}</textarea>
+                    </div>
+                </div>
+            `;
+            
+            actionsEl.innerHTML = `
+                <button onclick="saveTip(${id})">💾 저장</button>
+                <button onclick="cancelEditTip(${id})">❌ 취소</button>
+            `;
+            
+            row.classList.add('editing');
+        }
+
+        // 팁 저장
+        async function saveTip(id) {
+            const title = document.getElementById(`edit-tip-title-${id}`).value.trim();
+            const author = document.getElementById(`edit-tip-author-${id}`).value.trim() || 'anonymous';
+            const content = document.getElementById(`edit-tip-content-${id}`).value.trim();
+            
+            if (!title || !content) { 
+                showMessage('제목과 내용은 필수입니다', 'error'); 
+                return; 
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/tips/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, author })
+                });
+                
+                if (res.ok) {
+                    showMessage('✓ 변경사항이 저장되었습니다');
+                    loadTips();
+                } else {
+                    const error = await res.text();
+                    showMessage('✗ 오류: ' + error, 'error');
+                }
+            } catch (e) { 
+                showMessage('✗ 네트워크 오류: ' + e.message, 'error'); 
+            }
+        }
+
+        // 팁 편집 취소
+        function cancelEditTip(id) {
+            const tip = (window.tipsCache || []).find(x => x.id === id);
+            if (!tip) return loadTips();
+            
+            const infoEl = document.getElementById(`tip-info-${id}`);
+            const actionsEl = document.getElementById(`tip-actions-${id}`);
+            const row = document.getElementById(`tip-row-${id}`);
+            
+            infoEl.innerHTML = `
+                <div class="tip-title">${escapeHtml(tip.title)}</div>
+                <div class="tip-meta">
+                    by <span class="tip-author">${escapeHtml(tip.author)}</span> 
+                    · ${new Date(tip.created_at).toLocaleString('ko-KR')}
+                </div>
+                <div class="tip-text">${escapeHtml(tip.content)}</div>
+            `;
+            
+            actionsEl.innerHTML = `
+                <button onclick="editTip(${id})">✏️ 수정</button>
+                <button class="btn-delete" onclick="deleteTip(${id})">🗑️ 삭제</button>
+            `;
+            
+            row.classList.remove('editing');
+        }
+
+        // 팁 삭제
+        async function deleteTip(id) {
+            if (!confirm('이 팁을 정말 삭제하시겠습니까?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/tips/${id}`, { method: 'DELETE' });
+                
+                if (res.ok) {
+                    showMessage('✓ 팁이 삭제되었습니다');
+                    loadTips();
+                } else {
+                    const error = await res.text();
+                    showMessage('✗ 오류: ' + error, 'error');
+                }
+            } catch (e) { 
+                showMessage('✗ 네트워크 오류: ' + e.message, 'error'); 
+            }
+        }
+
+        // HTML 특수문자 이스케이프 (XSS 방지)
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // 페이지 로드 시 팁 목록 표시
+        loadTips();
+    </script>
+</body>
+</html>

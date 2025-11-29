@@ -219,6 +219,11 @@
     </div>
 
     <script>
+        /*
+         * API_BASE: 개발 환경에서 FastAPI 서버 주소입니다.
+         * - 브라우저에서 호출할 때는 로컬 호스트(예: http://localhost:8000)를 사용합니다.
+         * - 컨테이너 내부 호스트명(mysql 등)은 브라우저에서 직접 사용할 수 없습니다.
+         */
         const API_BASE = "http://localhost:8000";
 
         function showMessage(text, type = 'success') {
@@ -228,7 +233,12 @@
             setTimeout(() => msg.classList.remove('show'), 3000);
         }
 
-        // 팁 생성
+        /*
+         * createTip()
+         * - 역할: 폼에서 입력받은 값을 서버에 POST로 전송하여 팁을 생성합니다.
+         * - 검증: 제목/내용이 비었는지 확인합니다.
+         * - 성공 시: 폼 초기화 및 목록 재로드(loadTips 호출).
+         */
         async function createTip() {
             const title = document.getElementById('tipTitle').value.trim();
             const author = document.getElementById('tipAuthor').value.trim() || 'anonymous';
@@ -261,7 +271,11 @@
             }
         }
 
-        // 팁 목록 로드
+        /*
+         * loadTips()
+         * - 역할: GET /tips/ 를 호출해 팁 목록을 받아와 DOM에 렌더링합니다.
+         * - 동작: 응답을 window.tipsCache에 저장해 편집 취소 시 원복에 사용합니다.
+         */
         async function loadTips() {
             try {
                 const res = await fetch(`${API_BASE}/tips/`);
@@ -303,7 +317,11 @@
             }
         }
 
-        // 팁 편집
+        /*
+         * editTip(id)
+         * - 역할: 해당 팁 항목을 입력폼으로 바꿔 사용자가 수정할 수 있게 합니다.
+         * - 저장 시 saveTip(id)를 호출합니다.
+         */
         function editTip(id) {
             const tip = (window.tipsCache || []).find(x => x.id === id);
             if (!tip) return;
@@ -337,7 +355,11 @@
             row.classList.add('editing');
         }
 
-        // 팁 저장
+        /*
+         * saveTip(id)
+         * - 역할: 편집한 내용을 서버에 PUT으로 전송합니다.
+         * - 성공 시 목록을 새로고침합니다.
+         */
         async function saveTip(id) {
             const title = document.getElementById(`edit-tip-title-${id}`).value.trim();
             const author = document.getElementById(`edit-tip-author-${id}`).value.trim() || 'anonymous';
@@ -367,7 +389,11 @@
             }
         }
 
-        // 팁 편집 취소
+        /*
+         * cancelEditTip(id)
+         * - 역할: 편집 모드를 취소하고 원래 내용을 복구합니다.
+         * - 원본 데이터는 window.tipsCache에서 가져옵니다.
+         */
         function cancelEditTip(id) {
             const tip = (window.tipsCache || []).find(x => x.id === id);
             if (!tip) return loadTips();
@@ -393,7 +419,11 @@
             row.classList.remove('editing');
         }
 
-        // 팁 삭제
+        /*
+         * deleteTip(id)
+         * - 역할: 삭제 확인 후 DELETE /tips/{id}를 호출합니다.
+         * - 성공 시 목록을 새로고침합니다.
+         */
         async function deleteTip(id) {
             if (!confirm('이 팁을 정말 삭제하시겠습니까?')) return;
             
@@ -412,7 +442,8 @@
             }
         }
 
-        // HTML 특수문자 이스케이프 (XSS 방지)
+        // HTML 특수문자 이스케이프 (XSS 방지) - 프론트엔드 방어
+        // 서버에서도 입력 검증을 하고 있으므로 이중 방어입니다.
         function escapeHtml(text) {
             const map = {
                 '&': '&amp;',

@@ -31,6 +31,7 @@
 6주차 | 리눅스 서버 구축 | 리눅스 환경에서 Ubuntu Server 설치 및 운영, SSH 설정
 7주차 | 데이터베이스 서버 | MySQL/PostgreSQL 컨테이너로 DB 서버 구성
 8주차 | 백엔드 서버 연동 | Node.js 또는 Python Flask 서버와 DB 연동 실습
-9주차 | 서버 모니터링 실습 (Prometheus + Grafana) | Prometheus와 Grafana를 활용한 서버 상태 모니터링 및 시각화 실습
-10주차 | 배포 및 운영 | 간단한 CI/CD 개념, 서버 모니터링 도구 소개
+9주차 | crud 실습과 이해 | crud에 대한 기초지식습득 및 이해 
+10주차 | 서버 모니터링 실습 (Prometheus + Grafana) | Prometheus와 Grafana를 활용한 서버 상태 모니터링 및 시각화 실습
+11주차 | 배포 및 운영 | 간단한 CI/CD 개념, 서버 모니터링 도구 소개
 
